@@ -1,6 +1,6 @@
 # Simple Mini
 
-A lazy mans minify
+A lazy man's minify
 
 `go get github.com/romainmenke/simple-mini`
 
