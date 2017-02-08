@@ -19,3 +19,8 @@ It removes :
 
 It replaces :
 - double spaces with single spaces
+
+---
+
+Size reduction depends heavily on coding style.
+For me it averages to 20% (I like whitespace)
