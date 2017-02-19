@@ -6,12 +6,22 @@ A lazy man's minify
 
 ---
 
-I needed a tool to remove whitespace from css and js files for golang web projects. I did't want a transpiler and I didn't want to add node as a dependency.
-Since everything is gzipped anyway I also didn't want to minify naming.
+I needed a tool to remove whitespace from css and js files for golang web projects. I did't want a transpiler and I didn't want to add node as a dependency. Since everything is gzipped anyway I also didn't want to minify naming.
 
-It finds files with `.js` or `.css` extensions and generates `.min.js` and `.min.css` files. `.min` files are obviously ignored.
+- it loops over all files in a directory
+- removes whitespace
+- saves to `.min` version
 
 I use it with `//go:generate simple-mini` and [modd](https://github.com/cortesi/modd).
+
+---
+
+### Options
+
+- `-h`            : help
+- `-source`       : source directory
+- `-out`          : output directory
+- `trailing args` : exclusion -> simple `must not contain` logic
 
 ---
 
@@ -21,8 +31,3 @@ It removes :
 
 It replaces :
 - double spaces with single spaces
-
----
-
-Size reduction depends heavily on coding style.
-For me it averages to 20% (I like whitespace)

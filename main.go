@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"flag"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -10,22 +12,49 @@ import (
 
 func main() {
 
-	files, _ := ioutil.ReadDir("./")
+	source := flag.String("source", "./", "source directory")
+	out := flag.String("out", "./", "output directory")
+	flag.Parse()
+
+	sourceDir := strings.TrimSuffix(*source, "/") + "/"
+	outDir := strings.TrimSuffix(*out, "/") + "/"
+	createIfMissing(outDir)
+
+	exclude := flag.Args()
+
+	files, err := ioutil.ReadDir(sourceDir)
+	if err != nil {
+		panic(err)
+	}
+
+FILE_ITERATOR:
 	for _, f := range files {
-		if strings.HasSuffix(f.Name(), ".js") && !strings.HasSuffix(f.Name(), "min.js") {
-			minifyFileWithExtension(f.Name(), ".js")
+		if !isFile(sourceDir + f.Name()) {
+			fmt.Println(f.Name())
+			continue FILE_ITERATOR
 		}
 
-		if strings.HasSuffix(f.Name(), ".css") && !strings.HasSuffix(f.Name(), "min.css") {
-			minifyFileWithExtension(f.Name(), ".css")
+		for _, exc := range exclude {
+			if strings.Contains(f.Name(), exc) {
+				continue FILE_ITERATOR
+			}
 		}
+
+		if strings.Contains(f.Name(), "min") {
+			continue FILE_ITERATOR
+		}
+
+		nameComponents := strings.Split(f.Name(), ".")
+		extension := nameComponents[len(nameComponents)-1]
+
+		content := readFile(sourceDir + f.Name())
+		writeFile(content, f.Name(), extension, outDir)
 	}
 }
 
-func minifyFileWithExtension(fileName string, extension string) {
-
+func readFile(name string) []byte {
 	buf := bytes.NewBuffer(nil)
-	file, err := os.Open(fileName)
+	file, err := os.Open(name)
 	if err != nil {
 		panic(err)
 	}
@@ -34,11 +63,14 @@ func minifyFileWithExtension(fileName string, extension string) {
 		panic(err)
 	}
 	file.Close()
-	s := string(buf.Bytes())
+	return buf.Bytes()
+}
 
-	s = minify(s)
+func writeFile(content []byte, fileName string, extension string, out string) {
 
-	err = ioutil.WriteFile(strings.TrimSuffix(fileName, extension)+".min"+extension, []byte(s), 0644)
+	s := minify(string(content))
+
+	err := ioutil.WriteFile(out+strings.TrimSuffix(fileName, extension)+"min."+extension, []byte(s), 0644)
 	if err != nil {
 		panic(err)
 	}
@@ -49,8 +81,28 @@ func minify(source string) string {
 
 	mini := strings.Replace(source, `
 `, " ", -1)
-	mini = strings.Replace(mini, "  ", " ", -1)
+
+	for strings.Contains(mini, "  ") {
+		mini = strings.Replace(mini, "  ", " ", -1)
+	}
+
 	mini = strings.Replace(mini, `	`, "", -1)
 	return mini
 
+}
+
+func isFile(path string) bool {
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	return !fileInfo.IsDir()
+}
+
+func createIfMissing(path string) {
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		os.Mkdir(path, os.ModePerm)
+	}
 }
