@@ -31,3 +31,11 @@ It removes :
 
 It replaces :
 - double spaces with single spaces
+
+---
+
+### Simple
+
+- [simple-mini](https://github.com/romainmenke/simple-mini)
+- [simple-bundle](https://github.com/romainmenke/simple-bundle)
+- [simple-gzip](https://github.com/romainmenke/simple-gzip)
