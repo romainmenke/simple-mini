@@ -68,7 +68,7 @@ func readFile(name string) []byte {
 
 func writeFile(content []byte, fileName string, extension string, out string) {
 
-	s := minify(string(content))
+	s := minify(content)
 
 	err := ioutil.WriteFile(out+strings.TrimSuffix(fileName, extension)+"min."+extension, []byte(s), 0644)
 	if err != nil {
@@ -77,19 +77,43 @@ func writeFile(content []byte, fileName string, extension string, out string) {
 
 }
 
-func minify(source string) string {
+type minifyWriter struct {
+	io.Writer
+}
 
-	mini := strings.Replace(source, `
-`, " ", -1)
+func (m *minifyWriter) Write(p []byte) (n int, err error) {
 
-	for strings.Contains(mini, "  ") {
-		mini = strings.Replace(mini, "  ", " ", -1)
+	l := len(p)
+	min := minify(p)
+
+	l2, err := m.Writer.Write(min)
+	if err != nil {
+		return 0, err
 	}
 
-	mini = strings.Replace(mini, `	`, "", -1)
+	_ = l2
+	return l, err
+
+}
+
+func minify(source []byte) []byte {
+
+	mini := bytes.Replace(source, lineBreak, space, -1)
+
+	for bytes.Contains(mini, doubleSpace) {
+		mini = bytes.Replace(mini, doubleSpace, space, -1)
+	}
+
+	mini = bytes.Replace(mini, tab, empty, -1)
 	return mini
 
 }
+
+var lineBreak = []byte{10}
+var space = []byte{32}
+var doubleSpace = []byte{32, 32}
+var tab = []byte{9}
+var empty = []byte{}
 
 func isFile(path string) bool {
 	fileInfo, err := os.Stat(path)
