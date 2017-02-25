@@ -96,25 +96,6 @@ func (m *minifyWriter) Write(p []byte) (n int, err error) {
 
 }
 
-func minify(source []byte) []byte {
-
-	mini := bytes.Replace(source, lineBreak, space, -1)
-
-	for bytes.Contains(mini, doubleSpace) {
-		mini = bytes.Replace(mini, doubleSpace, space, -1)
-	}
-
-	mini = bytes.Replace(mini, tab, empty, -1)
-	return mini
-
-}
-
-var lineBreak = []byte{10}
-var space = []byte{32}
-var doubleSpace = []byte{32, 32}
-var tab = []byte{9}
-var empty = []byte{}
-
 func isFile(path string) bool {
 	fileInfo, err := os.Stat(path)
 	if err != nil {
