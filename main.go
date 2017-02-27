@@ -30,7 +30,6 @@ func main() {
 FILE_ITERATOR:
 	for _, f := range files {
 		if !isFile(sourceDir + f.Name()) {
-			fmt.Println(f.Name())
 			continue FILE_ITERATOR
 		}
 
