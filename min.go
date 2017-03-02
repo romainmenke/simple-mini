@@ -18,7 +18,6 @@ var tab = []byte{9}
 var empty = []byte{}
 
 func minify(source []byte) []byte {
-
 	// replace tabs with empty strings
 	source = bytes.Replace(source, tab, empty, -1)
 
@@ -31,5 +30,4 @@ func minify(source []byte) []byte {
 	}
 
 	return source
-
 }
