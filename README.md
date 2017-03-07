@@ -39,3 +39,4 @@ It replaces :
 - [simple-mini](https://github.com/romainmenke/simple-mini)
 - [simple-bundle](https://github.com/romainmenke/simple-bundle)
 - [simple-gzip](https://github.com/romainmenke/simple-gzip)
+- [simple-template](https://github.com/romainmenke/simple-template)
