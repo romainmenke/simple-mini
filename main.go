@@ -76,25 +76,6 @@ func writeFile(content []byte, fileName string, extension string, out string) {
 
 }
 
-type minifyWriter struct {
-	io.Writer
-}
-
-func (m *minifyWriter) Write(p []byte) (n int, err error) {
-
-	l := len(p)
-	min := minify(p)
-
-	l2, err := m.Writer.Write(min)
-	if err != nil {
-		return 0, err
-	}
-
-	_ = l2
-	return l, err
-
-}
-
 func isFile(path string) bool {
 	fileInfo, err := os.Stat(path)
 	if err != nil {
