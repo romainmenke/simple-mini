@@ -69,7 +69,7 @@ func writeFile(content []byte, fileName string, extension string, out string) {
 
 	s := minify(content)
 
-	err := ioutil.WriteFile(out+strings.TrimSuffix(fileName, extension)+"min."+extension, []byte(s), 0644)
+	err := ioutil.WriteFile(out+strings.TrimSuffix(fileName, extension)+"min."+extension, s, 0644)
 	if err != nil {
 		panic(err)
 	}
