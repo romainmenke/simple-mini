@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"sync"
 )
 
 func main() {
@@ -26,6 +27,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	var wg sync.WaitGroup
 
 FILE_ITERATOR:
 	for _, f := range files {
@@ -46,9 +49,34 @@ FILE_ITERATOR:
 		nameComponents := strings.Split(f.Name(), ".")
 		extension := nameComponents[len(nameComponents)-1]
 
-		content := readFile(sourceDir + f.Name())
-		writeFile(content, f.Name(), extension, outDir)
+		j := job{
+			sourceDir: sourceDir,
+			outDir:    outDir,
+			fileName:  f.Name(),
+			extension: extension,
+		}
+
+		wg.Add(1)
+
+		go func() {
+			defer wg.Done()
+			execute(j)
+		}()
 	}
+
+	wg.Wait()
+}
+
+type job struct {
+	sourceDir string
+	outDir    string
+	fileName  string
+	extension string
+}
+
+func execute(j job) {
+	content := readFile(j.sourceDir + j.fileName)
+	writeFile(content, j.fileName, j.extension, j.outDir)
 }
 
 func readFile(name string) []byte {
