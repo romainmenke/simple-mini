@@ -9,7 +9,7 @@ foo`
 
 	resultS := string(minify([]byte(testS)))
 
-	if resultS != "foo foo" {
+	if resultS != "foo foo"+string(byte(10)) {
 		t.Fail()
 	}
 }
@@ -20,7 +20,7 @@ func TestMinify_Tab(t *testing.T) {
 
 	resultS := string(minify([]byte(testS)))
 
-	if resultS != "foofoo" {
+	if resultS != "foofoo"+string(byte(10)) {
 		t.Fail()
 	}
 }
@@ -31,14 +31,14 @@ func TestMinify_Space(t *testing.T) {
 
 	resultS := string(minify([]byte(testS)))
 
-	if resultS != " foo foo " {
+	if resultS != " foo foo "+string(byte(10)) {
 		t.Fail()
 	}
 }
 
 func TestSize(t *testing.T) {
 
-	targetSize := 1135
+	targetSize := 1136
 	bSource := []byte(benchSource)
 	originalSize := len(bSource)
 
@@ -93,9 +93,13 @@ const benchSource = `class MrCloser extends HTMLElement {
 		}
 	}
 
+
 	toggle() {
+
 		this.closed = !this.closed;
+
 	}
+
 
 	constructor() {
 		super();
@@ -106,6 +110,7 @@ const benchSource = `class MrCloser extends HTMLElement {
 	}
 
 	setupClick() {
+
 		if (!this.closerID || !this.closeableID) {
 			return;
 		}
@@ -123,6 +128,7 @@ const benchSource = `class MrCloser extends HTMLElement {
 		} else {
 			this.closed = true;
 		}
+		
 	}
 };
 

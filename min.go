@@ -29,5 +29,8 @@ func minify(source []byte) []byte {
 		source = bytes.Replace(source, doubleSpace, space, -1)
 	}
 
+	// add a linebreak
+	source = append(source, 10)
+
 	return source
 }
